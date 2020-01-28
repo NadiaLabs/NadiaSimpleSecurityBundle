@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xsd:schema xmlns="http://nadialabs.com.tw/schema/dic/simple-security"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://nadialabs.com.tw/schema/dic/simple-security"
+            elementFormDefault="qualified">
+
+    <xsd:element name="config" type="config" />
+
+    <xsd:complexType name="config">
+        <xsd:choice>
+            <xsd:element name="role_management" type="role_management" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:choice>
+    </xsd:complexType>
+
+    <xsd:complexType name="role_management">
+        <xsd:choice>
+            <xsd:element name="group" type="group" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:choice>
+        <xsd:attribute name="firewall_name" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="group">
+        <xsd:choice>
+            <xsd:element name="role" type="role" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:choice>
+        <xsd:attribute name="title" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="role" mixed="true">
+        <xsd:attribute name="name" type="xsd:string" />
+    </xsd:complexType>
+</xsd:schema>
