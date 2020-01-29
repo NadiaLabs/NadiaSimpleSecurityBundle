@@ -11,6 +11,7 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection;
 
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -31,6 +32,15 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->fixXmlConfig('role_management')
             ->children()
+                ->scalarNode('role_class')
+                    ->validate()
+                        ->ifTrue(function ($v) {
+                            return !empty($v) && $v !== Role::class && !is_subclass_of($v, Role::class);
+                        })
+                        ->thenInvalid('The role class %s must extend "' . Role::class . '"')
+                    ->end()
+                    ->defaultValue('')
+                ->end()
                 ->arrayNode('role_managements')
                     ->arrayPrototype()
                         ->fixXmlConfig('group')

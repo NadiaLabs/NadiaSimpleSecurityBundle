@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd
                         http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd">
     <sec:config>
+        <sec:role_class>Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role</sec:role_class>
         <sec:role_management firewall_name="main">
             <sec:group title="Group title 1">
                 <sec:role name="ROLE_TEST_1_1">Role title #1-1</sec:role>

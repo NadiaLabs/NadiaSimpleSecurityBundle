@@ -1,4 +1,5 @@
 nadia_simple_security:
+    role_class: Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role
     role_managements:
         -   firewall_name: main
             groups:
