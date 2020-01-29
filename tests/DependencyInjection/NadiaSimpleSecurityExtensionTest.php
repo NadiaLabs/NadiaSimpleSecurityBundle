@@ -12,6 +12,7 @@
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection;
 
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\NadiaSimpleSecurityExtension;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -31,7 +32,11 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
     {
         $container = $this->createContainerByConfigFile('test');
 
-        $this->assertInstanceOf(ContainerBuilder::class, $container);
+        $this->assertEquals(Role::class, $container->getParameter('nadia.simple_security.role_class'));
+        $this->assertEquals(
+            require __DIR__ . '/../Fixtures/config/test-role-managements.php',
+            $container->getParameter('nadia.simple_security.role_managements')
+        );
     }
 
     protected function createContainerByConfigFile($filename, array $data = [])
