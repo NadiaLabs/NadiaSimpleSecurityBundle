@@ -21,6 +21,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class NadiaSimpleSecurityExtension
@@ -32,7 +33,7 @@ class NadiaSimpleSecurityExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = $this->getConfiguration($configs, $container);
+        $configuration = new Configuration(Kernel::VERSION);
         $config = $this->processConfiguration($configuration, $configs);
 
         $this->registerParameterBagService($container);

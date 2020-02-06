@@ -15,16 +15,22 @@ use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Configuration;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class ConfigurationTest
  */
 class ConfigurationTest extends TestCase
 {
-    public function testDefaultConfig()
+    /**
+     * @dataProvider gerKernelVersions
+     *
+     * @param string $kernelVersion
+     */
+    public function testDefaultConfig($kernelVersion)
     {
         $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), []);
+        $config = $processor->processConfiguration(new Configuration($kernelVersion), []);
         $expectConfig = [
             'role_managements' => [],
         ];
@@ -32,18 +38,28 @@ class ConfigurationTest extends TestCase
         $this->assertEquals($expectConfig, $config);
     }
 
-    public function testRoleManagements()
+    /**
+     * @dataProvider gerKernelVersions
+     *
+     * @param string $kernelVersion
+     */
+    public function testRoleManagements($kernelVersion)
     {
         $expectConfig = [
             'role_managements' => require __DIR__ . '/../Fixtures/config/test-role-managements.php',
         ];
         $processor = new Processor();
-        $config = $processor->processConfiguration(new Configuration(), [$expectConfig]);
+        $config = $processor->processConfiguration(new Configuration($kernelVersion), [$expectConfig]);
 
         $this->assertEquals($expectConfig, $config);
     }
 
-    public function testInvalidRoleClass()
+    /**
+     * @dataProvider gerKernelVersions
+     *
+     * @param string $kernelVersion
+     */
+    public function testInvalidRoleClass($kernelVersion)
     {
         $this->expectException(InvalidConfigurationException::class);
 
@@ -56,6 +72,16 @@ class ConfigurationTest extends TestCase
             ],
         ];
         $processor = new Processor();
-        $processor->processConfiguration(new Configuration(), [$config]);
+        $processor->processConfiguration(new Configuration($kernelVersion), [$config]);
+    }
+
+    public function gerKernelVersions()
+    {
+        return [
+            ['3.4'],
+            ['4.2'],
+            ['4.3'],
+            [Kernel::VERSION],
+        ];
     }
 }
