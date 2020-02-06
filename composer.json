@@ -2,9 +2,10 @@
     "name": "nadialabs/nadia-simple-security-bundle",
     "type": "symfony-bundle",
     "license": "MIT",
+    "description": "",
     "require": {
         "php": "^7.1",
-        "doctrine/doctrine-bundle": "^2.0",
+        "doctrine/doctrine-bundle": "^1.12|^2.0",
         "doctrine/orm": "^2.6",
         "symfony/console": "^3.0|^4.0",
         "symfony/dependency-injection": "^3.0|^4.0",
