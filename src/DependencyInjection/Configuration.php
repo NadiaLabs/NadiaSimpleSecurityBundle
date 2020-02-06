@@ -14,6 +14,7 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class Configuration
@@ -25,56 +26,48 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder('nadia_simple_security');
-        $rootNode = $treeBuilder->getRootNode();
+        if (version_compare(Kernel::VERSION, '4.3', '<')) {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('nadia_simple_security');
+        } else {
+            $treeBuilder = new TreeBuilder('nadia_simple_security');
+            $rootNode = $treeBuilder->getRootNode();
+        }
 
         $rootNode
             ->addDefaultsIfNotSet()
             ->fixXmlConfig('role_management')
             ->children()
-                ->scalarNode('role_class')
-                    ->validate()
-                        ->ifTrue(function ($v) {
-                            return !empty($v) && $v !== Role::class && !is_subclass_of($v, Role::class);
-                        })
-                        ->thenInvalid('The role class %s must extend "' . Role::class . '"')
-                    ->end()
-                    ->defaultValue('')
-                ->end()
                 ->arrayNode('role_managements')
                     ->arrayPrototype()
-                        ->fixXmlConfig('group')
+                        ->fixXmlConfig('role_group')
                         ->children()
-                            ->scalarNode('firewall_name')->end()
-                            ->arrayNode('groups')
-                                ->useAttributeAsKey('title')
+                            ->scalarNode('firewall_name')->isRequired()->end()
+                            ->scalarNode('object_manager_name')->defaultNull()->end()
+                            ->scalarNode('user_provider')->isRequired()->end()
+                            ->scalarNode('role_class')
+                                ->validate()
+                                    ->ifTrue(function ($v) {
+                                        return !empty($v) && $v !== Role::class && !is_subclass_of($v, Role::class);
+                                    })
+                                    ->thenInvalid('The role class %s must extend "' . Role::class . '"')
+                                ->end()
+                                ->defaultValue('')
+                            ->end()
+                            ->arrayNode('role_groups')
                                 ->arrayPrototype()
-                                    ->beforeNormalization()
-                                        ->ifTrue(function ($v) {
-                                            return is_array($v)
-                                                && !empty($v['role'])
-                                                && !empty($v['role']['name'])
-                                                && !empty($v['role']['value']);
-                                        })
-                                        ->then(function ($v) {
-                                            return [$v['role']['name'] => $v['role']['value']];
-                                        })
-                                        ->ifTrue(function ($v) {
-                                            return is_array($v)
-                                                && !empty($v['role'])
-                                                && !empty($v['role'][0])
-                                                && !empty($v['role'][0]['name'])
-                                                && !empty($v['role'][0]['value']);
-                                        })
-                                        ->then(function ($v) {
-                                            return array_combine(
-                                                array_column($v['role'], 'name'),
-                                                array_column($v['role'], 'value')
-                                            );
-                                        })
+                                    ->fixXmlConfig('role')
+                                    ->children()
+                                        ->scalarNode('title')->isRequired()->end()
+                                        ->arrayNode('roles')
+                                            ->arrayPrototype()
+                                                ->children()
+                                                    ->scalarNode('role')->isRequired()->end()
+                                                    ->scalarNode('title')->isRequired()->end()
+                                                ->end()
+                                            ->end()
+                                        ->end()
                                     ->end()
-                                    ->useAttributeAsKey('name')
-                                    ->scalarPrototype()->end()
                                 ->end()
                             ->end()
                         ->end()

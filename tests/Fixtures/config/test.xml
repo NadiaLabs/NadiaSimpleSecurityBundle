@@ -5,23 +5,25 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd
                         http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd">
     <sec:config>
-        <sec:role_class>Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role</sec:role_class>
-        <sec:role_management firewall_name="main">
-            <sec:group title="Group title 1">
-                <sec:role name="ROLE_TEST_1_1">Role title #1-1</sec:role>
-            </sec:group>
-            <sec:group title="Group title 2">
-                <sec:role name="ROLE_TEST_2_1">Role title #2-1</sec:role>
-                <sec:role name="ROLE_TEST_2_2">Role title #2-2</sec:role>
-            </sec:group>
-            <sec:group title="Group title 3">
-                <sec:role name="ROLE_TEST_3_1">Role title #3-1</sec:role>
-                <sec:role name="ROLE_TEST_3_2">Role title #3-2</sec:role>
-            </sec:group>
-            <sec:group title="Group title 4">
-                <sec:role name="ROLE_TEST_4_1">Role title #4-1</sec:role>
-                <sec:role name="ROLE_TEST_4_2">Role title #4-2</sec:role>
-            </sec:group>
+        <sec:role_management
+            firewall_name="main"
+            user_provider="test.user_provider"
+            role_class="Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role">
+            <sec:role_group title="Group title 1">
+                <sec:role role="ROLE_TEST_1_1" title="Role title #1-1" />
+            </sec:role_group>
+            <sec:role_group title="Group title 2">
+                <sec:role role="ROLE_TEST_2_1" title="Role title #2-1" />
+                <sec:role role="ROLE_TEST_2_2" title="Role title #2-2" />
+            </sec:role_group>
+            <sec:role_group title="Group title 3">
+                <sec:role role="ROLE_TEST_3_1" title="Role title #3-1" />
+                <sec:role role="ROLE_TEST_3_2" title="Role title #3-2" />
+            </sec:role_group>
+            <sec:role_group title="Group title 4">
+                <sec:role role="ROLE_TEST_4_1" title="Role title #4-1" />
+                <sec:role role="ROLE_TEST_4_2" title="Role title #4-2" />
+            </sec:role_group>
         </sec:role_management>
     </sec:config>
 </container>
