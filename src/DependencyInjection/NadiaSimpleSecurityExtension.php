@@ -14,11 +14,10 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\HttpKernel\Kernel;
@@ -58,15 +57,11 @@ class NadiaSimpleSecurityExtension extends Extension
      */
     private function registerParameterBagService(ContainerBuilder $container)
     {
-        if ($container->has('parameter_bag')) {
-            $container->setAlias('nadia.simple_security.parameter_bag', new Alias('parameter_bag', false));
-        } else {
-            $definition = new Definition(ParameterBag::class);
+        $definition = (new Definition(ParameterBagInterface::class))
+            ->setFactory([new Reference('service_container'), 'getParameterBag'])
+            ->setPublic(false);
 
-            $definition->setFactory([new Reference('service_container'), 'getParameterBag']);
-
-            $container->setDefinition('nadia.simple_security.parameter_bag', $definition);
-        }
+        $container->setDefinition('nadia.simple_security.parameter_bag', $definition);
     }
 
     /**

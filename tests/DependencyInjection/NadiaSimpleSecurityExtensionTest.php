@@ -13,10 +13,10 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection;
 
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\NadiaSimpleSecurityExtension;
-use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Class NadiaSimpleSecurityExtensionTest
@@ -33,9 +33,9 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
     {
         $container = $this->createContainerByConfigFile('test');
 
-        $this->assertTrue($container->hasDefinition('nadia.simple_security.parameter_bag'));
+        $this->assertTrue($container->has('nadia.simple_security.parameter_bag'));
         $this->assertEquals(
-            ParameterBag::class,
+            ParameterBagInterface::class,
             $container->getDefinition('nadia.simple_security.parameter_bag')->getClass()
         );
 
