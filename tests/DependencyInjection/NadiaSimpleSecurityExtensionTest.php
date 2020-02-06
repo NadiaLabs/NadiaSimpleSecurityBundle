@@ -39,7 +39,7 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
             $container->getDefinition('nadia.simple_security.parameter_bag')->getClass()
         );
 
-        $this->assertTrue($container->hasDefinition('nadia.simple_security.service_provider.role_management_config'));
+        $this->assertTrue($container->has('nadia.simple_security.service_provider.role_management_config'));
         $this->assertEquals(
             ServiceProvider::class,
             $container->getDefinition('nadia.simple_security.service_provider.role_management_config')->getClass()

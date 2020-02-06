@@ -75,14 +75,17 @@ class NadiaSimpleSecurityExtension extends Extension
 
         foreach ($config['role_managements'] as $roleManagement) {
             $id = $idPrefix . $roleManagement['firewall_name'];
-
-            $container->setDefinition($id, new Definition(RoleManagementConfig::class, [
+            $configDefinition = new Definition(RoleManagementConfig::class, [
                 $roleManagement['firewall_name'],
                 $roleManagement['object_manager_name'],
                 new Reference($roleManagement['user_provider']),
                 $roleManagement['role_class'],
                 $roleManagement['role_groups'],
-            ]));
+            ]);
+
+            $configDefinition->setPublic(false);
+
+            $container->setDefinition($id, $configDefinition);
         }
 
         $container->setDefinition('nadia.simple_security.service_provider.role_management_config', $definition);
