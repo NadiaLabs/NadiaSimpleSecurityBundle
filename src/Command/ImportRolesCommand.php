@@ -91,7 +91,7 @@ class ImportRolesCommand extends Command
         $ref = new \ReflectionClass($roleClassName);
         $newRoles = [];
 
-        foreach ($this->getRoles() as $roleName) {
+        foreach ($this->getRoles($roleManagementConfig) as $roleName) {
             $role = $repo->findOneBy(['role' => $roleName]);
 
             if (!$role instanceof Role) {
@@ -108,18 +108,17 @@ class ImportRolesCommand extends Command
     }
 
     /**
+     * @param RoleManagementConfig $roleManagementConfig
+     *
      * @return array
      */
-    private function getRoles()
+    private function getRoles(RoleManagementConfig $roleManagementConfig)
     {
-        $roleHierarchy = $this->parameterBag->get('security.role_hierarchy.roles');
         $roles = [];
 
-        foreach ($roleHierarchy as $role => $childRoles) {
-            $roles[$role] = $role;
-
-            foreach ($childRoles as $role) {
-                $roles[$role] = $role;
+        foreach ($roleManagementConfig->getRoleGroups() as $roleGroup) {
+            foreach ($roleGroup['roles'] as $role) {
+                $roles[$role['role']] = $role['role'];
             }
         }
 
