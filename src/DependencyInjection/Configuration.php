@@ -14,6 +14,7 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class Configuration
@@ -21,26 +22,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * @var string
-     */
-    private $kernelVersion;
-
-    /**
-     * Configuration constructor.
-     *
-     * @param string $kernelVersion
-     */
-    public function __construct($kernelVersion)
-    {
-        $this->kernelVersion = $kernelVersion;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
-        if (version_compare($this->kernelVersion, '4.3', '<')) {
+        if (version_compare(Kernel::VERSION, '4.3', '<')) {
             $treeBuilder = new TreeBuilder();
             $rootNode = $treeBuilder->root('nadia_simple_security');
         } else {
