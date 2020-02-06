@@ -1,0 +1,27 @@
+<div class="container-fluid">
+    {{ form_start((form)) }}
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            <button class="btn btn-success">Update {{ user.username }}'s roles</button>
+        </li>
+        {% for groupTitle, roleForms in groupedRoleForms %}
+        <li class="list-group-item">
+            <h4>{{ groupTitle }}</h4>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input select-all-roles" id="select-all-roles-{{ loop.index }}" />
+                    <label class="checkbox-inline form-check-label" for="select-all-roles-{{ loop.index }}">All</label>
+                </div>
+                {% for roleForm in roleForms %}
+                    {{ form_widget(roleForm, { 'label_attr': { 'class': 'checkbox-inline' } }) }}
+                {% endfor %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {{ form_end(form) }}
+</div>
+
+{% include '@NadiaSimpleSecurity/edit-user-roles/parts/edit-js.html.twig' %}

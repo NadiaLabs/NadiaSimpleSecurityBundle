@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    document.querySelectorAll('input.select-all-roles').forEach(function (element) {
+        function isSelectedAll(checkbox) {
+            var count = 0;
+            var checkedCount = 0;
+
+            checkbox.parentNode.parentNode.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+                if (!checkbox.classList.contains('select-all-roles')) {
+                    ++count;
+
+                    if (checkbox.checked) {
+                        ++checkedCount;
+                    }
+                }
+            });
+
+            return count === checkedCount;
+        }
+
+        if (isSelectedAll(element)) {
+            element.checked = true;
+        }
+
+        element.addEventListener('click', function () {
+            var checked = this.checked;
+
+            element.parentNode.parentNode.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+                checkbox.checked = checked;
+            });
+        });
+
+        element.parentNode.parentNode.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+            if (!checkbox.classList.contains('select-all-roles')) {
+                checkbox.addEventListener('click', function () {
+                    element.checked = isSelectedAll(checkbox);
+                });
+            }
+        });
+    });
+</script>
