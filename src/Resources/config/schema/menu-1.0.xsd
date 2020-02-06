@@ -9,26 +9,29 @@
 
     <xsd:complexType name="config">
         <xsd:sequence>
-            <xsd:element name="role_class" type="xsd:string" minOccurs="0" maxOccurs="1" />
             <xsd:element name="role_management" type="role_management" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
 
     <xsd:complexType name="role_management">
         <xsd:sequence>
-            <xsd:element name="group" type="group" minOccurs="1" maxOccurs="unbounded" />
+            <xsd:element name="role_group" type="role_group" minOccurs="1" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="firewall_name" type="xsd:string" />
+        <xsd:attribute name="object_manager_name" type="xsd:string" />
+        <xsd:attribute name="user_provider" type="xsd:string" />
+        <xsd:attribute name="role_class" type="xsd:string" />
     </xsd:complexType>
 
-    <xsd:complexType name="group">
+    <xsd:complexType name="role_group">
         <xsd:sequence>
             <xsd:element name="role" type="role" minOccurs="1" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="title" type="xsd:string" />
     </xsd:complexType>
 
-    <xsd:complexType name="role" mixed="true">
-        <xsd:attribute name="name" type="xsd:string" />
+    <xsd:complexType name="role">
+        <xsd:attribute name="title" type="xsd:string" />
+        <xsd:attribute name="role" type="xsd:string" />
     </xsd:complexType>
 </xsd:schema>

@@ -1,5 +1,0 @@
-parameters:
-    nadia.simple_security.role_class: ''
-    nadia.simple_security.role_managements: []
-
-services:
