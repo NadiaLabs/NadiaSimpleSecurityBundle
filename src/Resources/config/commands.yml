@@ -1,3 +1,10 @@
 parameters:
 
 services:
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Command\ImportRolesCommand:
+        arguments:
+            - '@doctrine'
+            - '@nadia.simple_security.service_provider.role_management_config'
+            - '@nadia.simple_security.parameter_bag'
+        tags:
+            - { name: console.command, command: nadia:simple-security:import-roles }
