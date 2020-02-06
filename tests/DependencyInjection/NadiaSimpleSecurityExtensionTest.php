@@ -11,6 +11,7 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection;
 
+use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\NadiaSimpleSecurityExtension;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role;
 use PHPUnit\Framework\TestCase;
@@ -28,14 +29,20 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
      */
     abstract protected function loadConfigFile(ContainerBuilder $container, $filename);
 
-    public function testParameters()
+    public function testAliases()
     {
         $container = $this->createContainerByConfigFile('test');
 
-        $this->assertEquals(Role::class, $container->getParameter('nadia.simple_security.role_class'));
+        $this->assertTrue($container->hasDefinition('nadia.simple_security.parameter_bag'));
         $this->assertEquals(
-            require __DIR__ . '/../Fixtures/config/test-role-managements.php',
-            $container->getParameter('nadia.simple_security.role_managements')
+            ParameterBag::class,
+            $container->getDefinition('nadia.simple_security.parameter_bag')->getClass()
+        );
+
+        $this->assertTrue($container->hasDefinition('nadia.simple_security.service_provider.role_management_config'));
+        $this->assertEquals(
+            ServiceProvider::class,
+            $container->getDefinition('nadia.simple_security.service_provider.role_management_config')->getClass()
         );
     }
 
