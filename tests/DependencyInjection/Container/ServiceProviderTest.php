@@ -48,6 +48,25 @@ class ServiceProviderTest extends TestCase
         $serviceProvider->get('invalid');
     }
 
+    public function testConstructor()
+    {
+        $idPrefix = 'nadia.simple_security.role_management_config.';
+        $container = new Container();
+
+        $serviceProvider = new ServiceProvider($container, $idPrefix);
+        $ref = new \ReflectionClass($serviceProvider);
+
+        $containerProperty = $ref->getProperty('container');
+        $containerProperty->setAccessible(true);
+
+        $this->assertEquals($container, $containerProperty->getValue($serviceProvider));
+
+        $serviceIdPrefixProperty = $ref->getProperty('serviceIdPrefix');
+        $serviceIdPrefixProperty->setAccessible(true);
+
+        $this->assertEquals($idPrefix, $serviceIdPrefixProperty->getValue($serviceProvider));
+    }
+
     public function getTestData()
     {
         $idPrefix = 'nadia.simple_security.role_management_config.';
