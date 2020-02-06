@@ -34,7 +34,7 @@ interface RoleEditableInterface
     /**
      * @param string[]|object[] $roles
      */
-    public function setRoles($roles);
+    public function setRoles(array $roles);
 
     /**
      * @param string|object $role

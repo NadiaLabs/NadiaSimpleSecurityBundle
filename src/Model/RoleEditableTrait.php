@@ -76,21 +76,21 @@ trait RoleEditableTrait
     }
 
     /**
-     * @param string[]|object[] $newRoles
+     * @param string[]|object[] $roles
      *
      * @return $this
      */
-    public function setRoles($newRoles)
+    public function setRoles(array $roles)
     {
-        $roles = &$this->{$this->getRolesPropertyName()};
+        $currentRoles = &$this->{$this->getRolesPropertyName()};
 
-        if ($roles instanceof Collection) {
-            $roles = new ArrayCollection();
+        if ($currentRoles instanceof Collection) {
+            $currentRoles = new ArrayCollection();
         } else {
-            $roles = [];
+            $currentRoles = [];
         }
 
-        foreach ($newRoles as $role) {
+        foreach ($roles as $role) {
             $this->addRole($role);
         }
 

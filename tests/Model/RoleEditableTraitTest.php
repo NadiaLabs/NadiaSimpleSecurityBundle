@@ -12,7 +12,6 @@
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\RoleEditableInterface;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User1;
@@ -48,7 +47,11 @@ class RoleEditableTraitTest extends TestCase
      */
     public function testSetRole(RoleEditableInterface $user, $roles)
     {
-        $user->setRoles($roles);
+        if ($roles instanceof ArrayCollection) {
+            $user->setRoles($roles->toArray());
+        } else {
+            $user->setRoles($roles);
+        }
 
         $this->assertEquals($roles, $user->getRoles());
     }
@@ -64,7 +67,11 @@ class RoleEditableTraitTest extends TestCase
     {
         $targetRole = $roles[1];
 
-        $user->setRoles($roles);
+        if ($roles instanceof ArrayCollection) {
+            $user->setRoles($roles->toArray());
+        } else {
+            $user->setRoles($roles);
+        }
 
         $this->assertEquals(true, $user->hasRole($targetRole));
         $this->assertEquals(false, $user->hasRole($missingRole));
@@ -82,7 +89,12 @@ class RoleEditableTraitTest extends TestCase
         $removedRole = $roles[1];
         $expectRoles = [$roles[0], $roles[2]];
 
-        $user->setRoles($roles);
+        if ($roles instanceof ArrayCollection) {
+            $user->setRoles($roles->toArray());
+        } else {
+            $user->setRoles($roles);
+        }
+
         $user->removeRole($removedRole);
 
         $index = 0;
