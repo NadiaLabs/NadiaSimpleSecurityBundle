@@ -36,8 +36,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->addDefaultsIfNotSet()
+            ->fixXmlConfig('super_admin_role')
             ->fixXmlConfig('role_management')
             ->children()
+                ->arrayNode('super_admin_roles')
+                    ->scalarPrototype()->end()
+                ->end()
                 ->arrayNode('role_managements')
                     ->arrayPrototype()
                         ->fixXmlConfig('role_group')

@@ -26,6 +26,7 @@ class ConfigurationTest extends TestCase
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(), []);
         $expectConfig = [
+            'super_admin_roles' => [],
             'role_managements' => [],
         ];
 
@@ -35,7 +36,23 @@ class ConfigurationTest extends TestCase
     public function testRoleManagements()
     {
         $expectConfig = [
+            'super_admin_roles' => [],
             'role_managements' => require __DIR__ . '/../Fixtures/config/test-role-managements.php',
+        ];
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), [$expectConfig]);
+
+        $this->assertEquals($expectConfig, $config);
+    }
+
+    public function testSuperAdminRoles()
+    {
+        $expectConfig = [
+            'super_admin_roles' => [
+                'ROLE_SUPER_ADMIN',
+                'ROLE_VIP_SUPER_ADMIN',
+            ],
+            'role_managements' => [],
         ];
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(), [$expectConfig]);

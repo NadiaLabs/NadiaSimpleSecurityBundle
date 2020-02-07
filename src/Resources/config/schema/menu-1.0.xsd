@@ -9,6 +9,7 @@
 
     <xsd:complexType name="config">
         <xsd:sequence>
+            <xsd:element name="super_admin_role" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="role_management" type="role_management" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>

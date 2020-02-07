@@ -13,6 +13,7 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection;
 
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\NadiaSimpleSecurityExtension;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -28,6 +29,20 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
      * @param string           $filename  Filename without extension part (e.g. "test" for test.php/test.xml/test.yml)
      */
     abstract protected function loadConfigFile(ContainerBuilder $container, $filename);
+
+    public function testSuperAdminRoleVoter()
+    {
+        $container = $this->createContainerByConfigFile('test');
+        $definition = $container->getDefinition(SuperAdminRoleVoter::class);
+
+        $this->assertEquals(
+            ['ROLE_SUPER_ADMIN', 'ROLE_VIP_SUPER_ADMIN'],
+            $container->getParameter('nadia.simple_security.super_admin_roles')
+        );
+
+        $this->assertEquals(SuperAdminRoleVoter::class, $definition->getClass());
+        $this->assertTrue($definition->hasTag('security.voter'));
+    }
 
     public function testAliases()
     {

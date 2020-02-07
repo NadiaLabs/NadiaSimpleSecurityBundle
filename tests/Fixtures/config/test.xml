@@ -5,6 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd
                         http://symfony.com/schema/dic/symfony https://symfony.com/schema/dic/symfony/symfony-1.0.xsd">
     <sec:config>
+        <sec:super_admin_role>ROLE_SUPER_ADMIN</sec:super_admin_role>
+        <sec:super_admin_role>ROLE_VIP_SUPER_ADMIN</sec:super_admin_role>
         <sec:role_management
             firewall_name="main"
             user_provider="test.user_provider"

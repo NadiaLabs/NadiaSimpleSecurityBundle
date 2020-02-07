@@ -13,10 +13,12 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection;
 
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -37,6 +39,10 @@ class NadiaSimpleSecurityExtension extends Extension
         $this->registerParameterBagService($container);
         $this->registerRoleManagementConfigServiceProvider($container, $config);
         $this->registerObjectManagerNameParameter($container, $config);
+
+        if (!empty($config['super_admin_roles'])) {
+            $this->registerSuperAdminVoterService($container, $config['super_admin_roles']);
+        }
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/'));
 
@@ -110,5 +116,21 @@ class NadiaSimpleSecurityExtension extends Extension
 
             $container->setParameter($parameterId, $objectManagerNames);
         }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param string[]         $superAdminRoles
+     */
+    private function registerSuperAdminVoterService(ContainerBuilder $container, array $superAdminRoles)
+    {
+        $parameterId = 'nadia.simple_security.super_admin_roles';
+        $container->setParameter($parameterId, $superAdminRoles);
+
+        $definition = new Definition(SuperAdminRoleVoter::class, [new Parameter($parameterId)]);
+
+        $definition->addTag('security.voter', ['priority' => 250]);
+
+        $container->setDefinition(SuperAdminRoleVoter::class, $definition);
     }
 }
