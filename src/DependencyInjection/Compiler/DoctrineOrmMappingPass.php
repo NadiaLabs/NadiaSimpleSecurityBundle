@@ -30,7 +30,8 @@ class DoctrineOrmMappingPass implements CompilerPassInterface
         $objectManagerNames = $container->getParameter('nadia.simple_security.object_manager_names');
 
         $namespaces = [
-            realpath(__DIR__ . '/Resources/config/doctrine-mapping') => 'Nadia\Bundle\NadiaSimpleSecurityBundle\Model',
+            realpath(__DIR__ . '/../../Resources/config/doctrine-mapping') =>
+                'Nadia\Bundle\NadiaSimpleSecurityBundle\Model',
         ];
         $driverIdPattern = 'doctrine.orm.%s_metadata_driver';
         $locatorDef = new Definition(SymfonyFileLocator::class, [$namespaces, '.orm.yml']);
