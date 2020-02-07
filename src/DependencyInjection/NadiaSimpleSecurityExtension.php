@@ -83,8 +83,6 @@ class NadiaSimpleSecurityExtension extends Extension
                 $roleManagement['role_groups'],
             ]);
 
-            $configDefinition->setPublic(false);
-
             $container->setDefinition($id, $configDefinition);
         }
 
