@@ -36,6 +36,7 @@ class NadiaSimpleSecurityExtension extends Extension
 
         $this->registerParameterBagService($container);
         $this->registerRoleManagementConfigServiceProvider($container, $config);
+        $this->registerObjectManagerNameParameter($container, $config);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/'));
 
@@ -88,5 +89,28 @@ class NadiaSimpleSecurityExtension extends Extension
         }
 
         $container->setDefinition('nadia.simple_security.service_provider.role_management_config', $definition);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $config
+     */
+    private function registerObjectManagerNameParameter(ContainerBuilder $container, array $config)
+    {
+        $parameterId = 'nadia.simple_security.object_manager_names';
+        $objectManagerNames = [];
+
+        foreach ($config['role_managements'] as $roleManagement) {
+            $objectManagerNames[] = empty($roleManagement['object_manager_name'])
+                ? 'default'
+                : $roleManagement['object_manager_name']
+            ;
+        }
+
+        if (!empty($objectManagerNames)) {
+            $objectManagerNames = array_unique($objectManagerNames);
+
+            $container->setParameter($parameterId, $objectManagerNames);
+        }
     }
 }
