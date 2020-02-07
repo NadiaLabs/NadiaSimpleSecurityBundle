@@ -1,6 +1,6 @@
-<button class="btn btn-success">Update {{ user.username }}'s roles</button>
-
 {{ form_start((form)) }}
+    <button class="btn btn-success">Update {{ user.username }}'s roles</button>
+
     {% for groupTitle, roleForms in groupedRoleForms %}
     <div>
         <h3>{{ groupTitle }}</h3>
