@@ -36,4 +36,23 @@ return [
             ],
         ],
     ],
+    [
+        'firewall_name' => 'test',
+        'object_manager_name' => 'test',
+        'user_provider' => 'test.user_provider2',
+        'role_class' => 'Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role',
+        'role_groups' => [
+            [
+                'title' => 'Group title 1',
+                'roles' => [
+                    ['role' => 'ROLE_TEST_1_1', 'title' => 'Role title #1-1'],
+                    ['role' => 'ROLE_TEST_1_2', 'title' => 'Role title #1-2'],
+                    ['role' => 'ROLE_TEST_1_3', 'title' => 'Role title #1-3'],
+                    ['role' => 'ROLE_TEST_1_4', 'title' => 'Role title #1-4'],
+                    ['role' => 'ROLE_TEST_1_5', 'title' => 'Role title #1-5'],
+                    ['role' => 'ROLE_TEST_1_6', 'title' => 'Role title #1-6'],
+                ],
+            ],
+        ],
+    ],
 ];

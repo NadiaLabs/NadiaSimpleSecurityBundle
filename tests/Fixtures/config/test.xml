@@ -25,5 +25,19 @@
                 <sec:role role="ROLE_TEST_4_2" title="Role title #4-2" />
             </sec:role_group>
         </sec:role_management>
+        <sec:role_management
+            firewall_name="test"
+            user_provider="test.user_providers"
+            role_class="Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role"
+            object_manager_name="test">
+            <sec:role_group title="Group title 1">
+                <sec:role role="ROLE_TEST_1_1" title="Role title #1-1" />
+                <sec:role role="ROLE_TEST_1_2" title="Role title #1-2" />
+                <sec:role role="ROLE_TEST_1_3" title="Role title #1-3" />
+                <sec:role role="ROLE_TEST_1_4" title="Role title #1-4" />
+                <sec:role role="ROLE_TEST_1_5" title="Role title #1-5" />
+                <sec:role role="ROLE_TEST_1_6" title="Role title #1-6" />
+            </sec:role_group>
+        </sec:role_management>
     </sec:config>
 </container>
