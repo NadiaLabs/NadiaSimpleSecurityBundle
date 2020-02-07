@@ -28,7 +28,6 @@ class DoctrineOrmMappingPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $objectManagerNames = $container->getParameter('nadia.simple_security.object_manager_names');
-
         $namespaces = [
             realpath(__DIR__ . '/../../Resources/config/doctrine-mapping') =>
                 'Nadia\Bundle\NadiaSimpleSecurityBundle\Model',
