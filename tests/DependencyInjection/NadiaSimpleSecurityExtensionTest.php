@@ -75,7 +75,7 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
 
         return new ContainerBuilder(new ParameterBag(array_merge([
             'kernel.bundles' => [
-                'NadiaMenuBundle' => 'Nadia\\Bundle\\NadiaSimpleSecurityBundle\\NadiaSimpleSecurityBundle',
+                'NadiaSimpleSecurityBundle' => 'Nadia\\Bundle\\NadiaSimpleSecurityBundle\\NadiaSimpleSecurityBundle',
             ],
             'kernel.bundles_metadata' => [
                 'NadiaSimpleSecurityBundle' => [
