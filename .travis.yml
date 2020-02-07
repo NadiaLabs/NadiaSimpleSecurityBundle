@@ -52,4 +52,4 @@ install:
 script:
     - composer validate --strict --no-check-lock
     - ./vendor/bin/phpcs
-    - ./vendor/bin/simple-phpunit
+    - ./vendor/bin/simple-phpunit --coverage-text
