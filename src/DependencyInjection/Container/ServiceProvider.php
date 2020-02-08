@@ -25,18 +25,11 @@ class ServiceProvider implements ContainerInterface
     private $container;
 
     /**
-     * @var string
-     */
-    private $serviceIdPrefix;
-
-    /**
      * @param ContainerInterface $container
-     * @param string             $serviceIdPrefix
      */
-    public function __construct(ContainerInterface $container, string $serviceIdPrefix)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->serviceIdPrefix = $serviceIdPrefix;
     }
 
     /**
@@ -46,13 +39,11 @@ class ServiceProvider implements ContainerInterface
      */
     public function get($id)
     {
-        $id = $this->getServiceId($id);
-
         if ($this->container->has($id)) {
             return $this->container->get($id);
         }
 
-        throw new \InvalidArgumentException('Could not find service "' . $id . '"');
+        throw new \InvalidArgumentException('Could not find RoleManagementConfig with firewall name "' . $id . '"');
     }
 
     /**
@@ -62,18 +53,6 @@ class ServiceProvider implements ContainerInterface
      */
     public function has($id)
     {
-        $id = $this->getServiceId($id);
-
         return $this->container->has($id);
-    }
-
-    /**
-     * @param string $firewallName
-     *
-     * @return string
-     */
-    private function getServiceId($firewallName)
-    {
-        return $this->serviceIdPrefix . $firewallName;
     }
 }

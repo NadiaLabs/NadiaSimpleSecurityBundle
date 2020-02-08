@@ -11,11 +11,15 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection;
 
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\NadiaSimpleSecurityExtension;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\TestUserProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -59,6 +63,14 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
             ServiceProvider::class,
             $container->getDefinition('nadia.simple_security.service_provider.role_management_config')->getClass()
         );
+        $this->assertInstanceOf(
+            RoleManagementConfig::class,
+            $container->get('test.service_provider.role_management_config')->get('main')
+        );
+        $this->assertInstanceOf(
+            RoleManagementConfig::class,
+            $container->get('test.service_provider.role_management_config')->get('test')
+        );
     }
 
     protected function createContainerByConfigFile($filename, array $data = [])
@@ -72,6 +84,13 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
         $container->getCompilerPassConfig()->setOptimizationPasses([]);
         $container->getCompilerPassConfig()->setRemovingPasses([]);
         $container->getCompilerPassConfig()->setAfterRemovingPasses([]);
+
+        $container->setDefinition('test.user_provider', new Definition(TestUserProvider::class));
+        $container->setDefinition('test.user_provider2', new Definition(TestUserProvider::class));
+        $container->setAlias(
+            'test.service_provider.role_management_config',
+            new Alias('nadia.simple_security.service_provider.role_management_config', true)
+        );
 
         $container->compile();
 

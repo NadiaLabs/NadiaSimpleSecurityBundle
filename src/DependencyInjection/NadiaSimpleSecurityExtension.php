@@ -15,6 +15,7 @@ use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -77,7 +78,7 @@ class NadiaSimpleSecurityExtension extends Extension
     private function registerRoleManagementConfigServiceProvider(ContainerBuilder $container, array $config)
     {
         $idPrefix = 'nadia.simple_security.role_management_config.';
-        $definition = new Definition(ServiceProvider::class, [new Reference('service_container'), $idPrefix]);
+        $serviceMap = [];
 
         foreach ($config['role_managements'] as $roleManagement) {
             $id = $idPrefix . $roleManagement['firewall_name'];
@@ -90,9 +91,17 @@ class NadiaSimpleSecurityExtension extends Extension
             ]);
 
             $container->setDefinition($id, $configDefinition);
+
+            $serviceMap[$roleManagement['firewall_name']] = new Reference($id);
         }
 
-        $container->setDefinition('nadia.simple_security.service_provider.role_management_config', $definition);
+        $container->setDefinition(
+            'nadia.simple_security.service_provider.role_management_config',
+            new Definition(
+                ServiceProvider::class,
+                [ServiceLocatorTagPass::register($container, $serviceMap), $idPrefix]
+            )
+        );
     }
 
     /**

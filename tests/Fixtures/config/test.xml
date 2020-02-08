@@ -29,7 +29,7 @@
         </sec:role_management>
         <sec:role_management
             firewall_name="test"
-            user_provider="test.user_providers"
+            user_provider="test.user_provider2"
             role_class="Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role"
             object_manager_name="test">
             <sec:role_group title="Group title 1">

@@ -50,33 +50,26 @@ class ServiceProviderTest extends TestCase
 
     public function testConstructor()
     {
-        $idPrefix = 'nadia.simple_security.role_management_config.';
         $container = new Container();
 
-        $serviceProvider = new ServiceProvider($container, $idPrefix);
+        $serviceProvider = new ServiceProvider($container);
         $ref = new \ReflectionClass($serviceProvider);
 
         $containerProperty = $ref->getProperty('container');
         $containerProperty->setAccessible(true);
 
         $this->assertEquals($container, $containerProperty->getValue($serviceProvider));
-
-        $serviceIdPrefixProperty = $ref->getProperty('serviceIdPrefix');
-        $serviceIdPrefixProperty->setAccessible(true);
-
-        $this->assertEquals($idPrefix, $serviceIdPrefixProperty->getValue($serviceProvider));
     }
 
     public function getTestData()
     {
-        $idPrefix = 'nadia.simple_security.role_management_config.';
         $roleManagerConfig = new RoleManagementConfig('test', null, new TestUserProvider(), Role::class, []);
         $container = new Container();
 
-        $container->set($idPrefix . 'test', $roleManagerConfig);
+        $container->set('test', $roleManagerConfig);
 
         return [
-            [new ServiceProvider($container, $idPrefix), $roleManagerConfig],
+            [new ServiceProvider($container), $roleManagerConfig],
         ];
     }
 }
