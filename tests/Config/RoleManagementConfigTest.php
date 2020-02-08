@@ -81,7 +81,14 @@ class RoleManagementConfigTest extends TestCase
                 new TestUserProvider(),
                 Role::class,
                 $roleManagements[0]['role_groups'],
-            ]
+            ],
+            [
+                'test',
+                null,
+                new TestUserProvider(),
+                '',
+                $roleManagements[0]['role_groups'],
+            ],
         ];
     }
 }

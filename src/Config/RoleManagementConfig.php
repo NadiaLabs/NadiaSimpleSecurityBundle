@@ -60,7 +60,7 @@ class RoleManagementConfig
         string $roleClassName,
         array $roleGroups
     ) {
-        if ($roleClassName !== Role::class && !is_subclass_of($roleClassName, Role::class)) {
+        if (!empty($roleClassName) && $roleClassName !== Role::class && !is_subclass_of($roleClassName, Role::class)) {
             throw new \InvalidArgumentException(
                 sprintf('The role class "%s" must extend "%s"', $roleClassName, Role::class)
             );
