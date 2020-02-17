@@ -7,3 +7,17 @@ services:
             - '@nadia.simple_security.service_provider.role_management_config'
         tags:
             - { name: console.command, command: nadia:simple-security:import-roles }
+
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Command\PromoteUserCommand:
+        arguments:
+            - '@doctrine'
+            - '@nadia.simple_security.service_provider.role_management_config'
+        tags:
+            - { name: console.command, command: nadia:simple-security:promote-user }
+
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Command\DemoteUserCommand:
+        arguments:
+            - '@doctrine'
+            - '@nadia.simple_security.service_provider.role_management_config'
+        tags:
+            - { name: console.command, command: nadia:simple-security:demote-user }
