@@ -11,20 +11,16 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Command;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
-use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  * A console command to import roles into database
  */
-class ImportRolesCommand extends Command
+class ImportRolesCommand extends AbstractRoleCommand
 {
     /**
      * @var string The default command name
@@ -32,41 +28,7 @@ class ImportRolesCommand extends Command
     protected static $defaultName = 'nadia:simple-security:import-roles';
 
     /**
-     * @var Registry
-     */
-    private $doctrine;
-
-    /**
-     * @var ServiceProvider
-     */
-    private $roleManagementConfigServiceProvider;
-
-    /**
-     * @var ParameterBag
-     */
-    private $parameterBag;
-
-    /**
-     * ImportRolesCommand constructor.
-     *
-     * @param Registry        $doctrine
-     * @param ServiceProvider $roleManagementConfigServiceProvider
-     * @param ParameterBag    $parameterBag
-     */
-    public function __construct(
-        Registry $doctrine,
-        ServiceProvider $roleManagementConfigServiceProvider,
-        ParameterBag $parameterBag
-    ) {
-        parent::__construct();
-
-        $this->doctrine = $doctrine;
-        $this->roleManagementConfigServiceProvider = $roleManagementConfigServiceProvider;
-        $this->parameterBag = $parameterBag;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function configure()
     {
@@ -77,51 +39,61 @@ class ImportRolesCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
+     *
+     * @throws \ReflectionException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $firewallName = $input->getArgument('firewall-name');
-        /** @var RoleManagementConfig $roleManagementConfig */
-        $roleManagementConfig = $this->roleManagementConfigServiceProvider->get($firewallName);
-        $roleClassName = $roleManagementConfig->getRoleClassName();
+        $config = $this->getRoleManagementConfig($input->getArgument('firewall-name'));
+        $om = $this->getObjectManager($config);
+        $newRoles = $this->getNewRoles($config);
 
-        $om = $this->doctrine->getManager($roleManagementConfig->getObjectManagerName());
-        $repo = $om->getRepository($roleClassName);
-        $ref = new \ReflectionClass($roleClassName);
-        $newRoles = [];
-
-        foreach ($this->getRoles($roleManagementConfig) as $roleName) {
-            $role = $repo->findOneBy(['role' => $roleName]);
-
-            if (!$role instanceof Role) {
-                $role = $ref->newInstance($roleName);
-                $newRoles[] = $roleName;
-
+        if (!empty($newRoles)) {
+            foreach ($newRoles as $role) {
                 $om->persist($role);
             }
-        }
 
-        $om->flush();
+            $om->flush();
+
+            $output->writeln("\n" . 'Added new roles:' . "\n");
+
+            foreach ($newRoles as $role) {
+                $output->writeln('  - ' . $role->getRole());
+            }
+
+            $output->writeln('');
+        } else {
+            $output->writeln("\n" . 'There is nothing to update.' . "\n");
+        }
 
         return 0;
     }
 
     /**
-     * @param RoleManagementConfig $roleManagementConfig
+     * @param RoleManagementConfig $config
      *
-     * @return array
+     * @return Role[]
+     *
+     * @throws \ReflectionException
      */
-    private function getRoles(RoleManagementConfig $roleManagementConfig)
+    protected function getNewRoles(RoleManagementConfig $config)
     {
-        $roles = [];
+        $roleClassName = $config->getRoleClassName();
+        $repo = $this->getObjectManager($config)->getRepository($roleClassName);
+        $ref = new \ReflectionClass($roleClassName);
+        $newRoles = [];
 
-        foreach ($roleManagementConfig->getRoleGroups() as $roleGroup) {
+        foreach ($config->getRoleGroups() as $roleGroup) {
             foreach ($roleGroup['roles'] as $role) {
-                $roles[$role['role']] = $role['role'];
+                $roleName = $role['role'];
+
+                if (!$repo->findOneBy(['role' => $roleName]) instanceof Role) {
+                    $newRoles[] = $ref->newInstance($roleName);
+                }
             }
         }
 
-        return $roles;
+        return $newRoles;
     }
 }
