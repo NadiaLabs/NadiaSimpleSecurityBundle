@@ -16,4 +16,13 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity;
  */
 class Role extends \Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role
 {
+    protected $id = 0;
+
+    /**
+     * @inheritDoc
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }

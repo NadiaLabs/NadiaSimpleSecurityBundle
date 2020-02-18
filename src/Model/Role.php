@@ -14,17 +14,12 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Model;
 /**
  * Class Role
  */
-class Role
+abstract class Role
 {
-    /**
-     * @var int
-     */
-    private $id = 0;
-
     /**
      * @var string
      */
-    private $role;
+    protected $role;
 
     /**
      * Role constructor.
@@ -37,12 +32,9 @@ class Role
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getId(): int
-    {
-        return $this->id;
-    }
+    abstract public function getId();
 
     /**
      * @return string

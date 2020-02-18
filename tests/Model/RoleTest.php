@@ -11,7 +11,7 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Model;
 
-use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role;
 use PHPUnit\Framework\TestCase;
 
 /**
