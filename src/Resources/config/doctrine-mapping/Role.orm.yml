@@ -1,7 +1,0 @@
-Nadia\Bundle\NadiaSimpleSecurityBundle\Model\Role:
-    type: mappedSuperclass
-    fields:
-        role:
-            type: string
-            length: 64
-            unique: true

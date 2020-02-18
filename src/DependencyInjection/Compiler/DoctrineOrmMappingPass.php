@@ -12,7 +12,7 @@
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Compiler;
 
 use Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -33,8 +33,8 @@ class DoctrineOrmMappingPass implements CompilerPassInterface
                 'Nadia\Bundle\NadiaSimpleSecurityBundle\Model',
         ];
         $driverIdPattern = 'doctrine.orm.%s_metadata_driver';
-        $locatorDef = new Definition(SymfonyFileLocator::class, [$namespaces, '.orm.yml']);
-        $mappingDriverDef = new Definition(YamlDriver::class, [$locatorDef]);
+        $locatorDef = new Definition(SymfonyFileLocator::class, [$namespaces, '.orm.xml']);
+        $mappingDriverDef = new Definition(XmlDriver::class, [$locatorDef]);
 
         foreach ($objectManagerNames as $objectManagerName) {
             $driverId = sprintf($driverIdPattern, $objectManagerName);
