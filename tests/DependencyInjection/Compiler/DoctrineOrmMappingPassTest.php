@@ -49,4 +49,17 @@ class DoctrineOrmMappingPassTest extends TestCase
             $this->assertEquals('Nadia\Bundle\NadiaSimpleSecurityBundle\Model', $calls[0][1][1]);
         }
     }
+
+    public function testEmptyObjectManagerNames()
+    {
+        $container = $this->createMock(ContainerBuilder::class);
+
+        $container->expects($this->once())->method('hasParameter')->willReturn(false);
+
+        $container->expects($this->never())->method('getParameter');
+
+        $pass = new DoctrineOrmMappingPass();
+
+        $pass->process($container);
+    }
 }
