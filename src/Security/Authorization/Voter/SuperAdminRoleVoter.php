@@ -65,8 +65,14 @@ class SuperAdminRoleVoter implements VoterInterface
         }
 
         return array_map(
-            function (Role $role) {
-                return $role->getRole();
+            function ($role) {
+                if (is_string($role)) {
+                    return $role;
+                } elseif (method_exists($role, 'getRole')) {
+                    return $role->getRole();
+                }
+
+                return '';
             },
             $token->getRoles(false)
         );
