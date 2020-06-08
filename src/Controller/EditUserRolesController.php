@@ -23,14 +23,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 /**
- * Class EditUserRolesController
+ * Class EditRolesController
  */
 class EditUserRolesController
 {
@@ -47,7 +46,7 @@ class EditUserRolesController
     /**
      * @var ManagerRegistry
      */
-    private $doctrine;
+    private $registry;
 
     /**
      * @var UrlGeneratorInterface
@@ -60,32 +59,42 @@ class EditUserRolesController
     private $roleManagementConfigServiceProvider;
 
     /**
-     * EditUserRolesController constructor.
+     * EditRolesController constructor.
      *
      * @param Environment           $twig
      * @param FormFactoryInterface  $formFactory
-     * @param ManagerRegistry       $doctrine
+     * @param ManagerRegistry       $registry
      * @param UrlGeneratorInterface $urlGenerator
      * @param ServiceProvider       $roleManagementConfigServiceProvider
      */
     public function __construct(
         Environment $twig,
         FormFactoryInterface $formFactory,
-        ManagerRegistry $doctrine,
+        ManagerRegistry $registry,
         UrlGeneratorInterface $urlGenerator,
         ServiceProvider $roleManagementConfigServiceProvider
     ) {
         $this->twig = $twig;
         $this->formFactory = $formFactory;
-        $this->doctrine = $doctrine;
+        $this->registry = $registry;
         $this->urlGenerator = $urlGenerator;
         $this->roleManagementConfigServiceProvider = $roleManagementConfigServiceProvider;
     }
 
     /**
+     * Edit target entity's roles (The entity class should implement RoleEditableInterface)
+     *
+     * Request Query:
+     *   - class: Entity class name (e.g. Foo\Bar\RoleEditableClassName)
+     *   - pk: Primary key of the target entity, accept an integer for an id column, or an array of multiple columns
+     *         e.g.
+     *         - 1234 (for an id column)
+     *         - ['foo' => 1234, 'bar' => 2234]
+     *
+     * TODO: need a twig function: nadia_simple_security_edit_roles_url($firewallName, $entityObject, $pk)
+     *
      * @param Request $request
      * @param string  $firewallName
-     * @param string  $username
      *
      * @return Response
      *
@@ -93,14 +102,18 @@ class EditUserRolesController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function edit(Request $request, $firewallName, $username)
+    public function edit(Request $request, $firewallName)
     {
+        $class = $request->query->get('class');
+        $pk = $request->query->get('pk');
+
+        $om = $this->getDoctrine()->getManagerForClass($class);
+        /** @var RoleEditableInterface $target */
+        $target = $om->find($class, $pk);
+
         $roleManagementConfig = $this->roleManagementConfigServiceProvider->get($firewallName);
-        $userProvider = $roleManagementConfig->getUserProvider();
-        /** @var RoleEditableInterface $user */
-        $user = $userProvider->loadUserByUsername($username);
         $roleGroups = $roleManagementConfig->getRoleGroups();
-        $form = $this->createForm($roleGroups, ['roles' => $this->getUserRoles($user)]);
+        $form = $this->createForm($roleGroups, ['roles' => $this->getTargetRoles($target)]);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -118,7 +131,7 @@ class EditUserRolesController
                         }
                     }
                 }
-                foreach ($user->getRoles() as $role) {
+                foreach ($target->getRoles() as $role) {
                     $role = (string) $role;
 
                     if (isset($newRoles[$role])) {
@@ -130,36 +143,35 @@ class EditUserRolesController
                 }
 
                 $roleClassName = $roleManagementConfig->getRoleClassName();
-                $om = $this->doctrine->getManager($roleManagementConfig->getObjectManagerName());
 
                 if (empty($roleClassName)) {
-                    $userRoles = array_flip($user->getRoles());
+                    $roles = array_flip($target->getRoles());
 
                     foreach ($newRoles as $role) {
-                        $userRoles[$role] = 1;
+                        $roles[$role] = 1;
                     }
                     foreach ($deleteRoles as $role) {
-                        unset($userRoles[$role]);
+                        unset($roles[$role]);
                     }
 
-                    $user->setRoles(array_keys($userRoles));
+                    $target->setRoles(array_keys($roles));
                 } else {
                     $roleRepo = $om->getRepository($roleClassName);
 
                     foreach ($newRoles as $role) {
-                        $user->addRole($roleRepo->findOneBy(['role' => $role]));
+                        $target->addRole($roleRepo->findOneBy(['role' => $role]));
                     }
                     foreach ($deleteRoles as $role) {
-                        $user->removeRole($roleRepo->findOneBy(['role' => $role]));
+                        $target->removeRole($roleRepo->findOneBy(['role' => $role]));
                     }
                 }
 
-                $om->persist($user);
+                $om->persist($target);
                 $om->flush();
 
                 $redirectUrl = $this->urlGenerator->generate(
-                    '_nadia_simple_security_edit_user_roles',
-                    compact('firewallName', 'username')
+                    '_nadia_simple_security_edit_roles',
+                    compact('firewallName', 'class', 'pk')
                 );
 
                 return new RedirectResponse($redirectUrl);
@@ -168,7 +180,6 @@ class EditUserRolesController
 
         $formView = $form->createView();
         $viewData = [
-            'user' => $user,
             'roleGroups' => $roleGroups,
             'form' => $formView,
             'groupedRoleForms' => $this->createGroupedRoleForms($formView, $roleGroups),
@@ -178,15 +189,15 @@ class EditUserRolesController
     }
 
     /**
-     * @param RoleEditableInterface $user
+     * @param RoleEditableInterface $target
      *
      * @return string[]
      */
-    private function getUserRoles(RoleEditableInterface $user)
+    private function getTargetRoles(RoleEditableInterface $target)
     {
         $roles = [];
 
-        foreach ($user->getRoles() as $role) {
+        foreach ($target->getRoles() as $role) {
             $roles[] = (string) $role;
         }
 
@@ -249,5 +260,13 @@ class EditUserRolesController
         }
 
         return $groupedForms;
+    }
+
+    /**
+     * @return ManagerRegistry
+     */
+    private function getDoctrine()
+    {
+        return $this->registry;
     }
 }

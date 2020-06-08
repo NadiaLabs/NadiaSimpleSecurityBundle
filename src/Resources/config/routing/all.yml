@@ -1,4 +1,4 @@
-_nadia_simple_security_edit_user_roles:
-    path: /nadia/simple-security/edit-user-roles/{firewallName}/{username}
-    controller: Nadia\Bundle\NadiaSimpleSecurityBundle\Controller\EditUserRolesController:edit
+_nadia_simple_security_edit_roles:
+    path: /nadia/simple-security/edit-user-roles/{firewallName}
+    controller: Nadia\Bundle\NadiaSimpleSecurityBundle\Controller\EditRolesController:edit
     methods: [GET, POST]
