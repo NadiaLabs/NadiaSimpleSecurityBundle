@@ -31,7 +31,7 @@ use Twig\Error\SyntaxError;
 /**
  * Class EditRolesController
  */
-class EditUserRolesController
+class EditRolesController
 {
     /**
      * @var Environment
@@ -185,7 +185,7 @@ class EditUserRolesController
             'groupedRoleForms' => $this->createGroupedRoleForms($formView, $roleGroups),
         ];
 
-        return new Response($this->twig->render('@NadiaSimpleSecurity/edit-user-roles/edit.html.twig', $viewData));
+        return new Response($this->twig->render('@NadiaSimpleSecurity/edit-roles/edit.html.twig', $viewData));
     }
 
     /**
