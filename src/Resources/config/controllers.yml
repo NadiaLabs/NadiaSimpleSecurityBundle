@@ -6,6 +6,6 @@ services:
             - '@twig'
             - '@form.factory'
             - '@doctrine'
-            - '@router'
+            - '@Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator'
             - '@Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider'
         public: true
