@@ -1,0 +1,6 @@
+parameters:
+
+services:
+    Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider:
+        arguments:
+            - ~

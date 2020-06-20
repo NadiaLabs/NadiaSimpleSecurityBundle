@@ -37,6 +37,12 @@ class NadiaSimpleSecurityExtension extends Extension
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/'));
+
+        $loader->load('services.yml');
+        $loader->load('commands.yml');
+        $loader->load('controllers.yml');
+
         $this->registerParameterBagService($container);
         $this->registerRoleManagementConfigServiceProvider($container, $config);
         $this->registerObjectManagerNameParameter($container, $config);
@@ -44,11 +50,6 @@ class NadiaSimpleSecurityExtension extends Extension
         if (!empty($config['super_admin_roles'])) {
             $this->registerSuperAdminVoterService($container, $config['super_admin_roles']);
         }
-
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config/'));
-
-        $loader->load('commands.yml');
-        $loader->load('controllers.yml');
     }
 
     /**
@@ -95,13 +96,8 @@ class NadiaSimpleSecurityExtension extends Extension
             $serviceMap[$roleManagement['firewall_name']] = new Reference($id);
         }
 
-        $container->setDefinition(
-            'nadia.simple_security.service_provider.role_management_config',
-            new Definition(
-                ServiceProvider::class,
-                [ServiceLocatorTagPass::register($container, $serviceMap), $idPrefix]
-            )
-        );
+        $container->getDefinition(ServiceProvider::class)
+            ->replaceArgument(0, ServiceLocatorTagPass::register($container, $serviceMap));
     }
 
     /**
