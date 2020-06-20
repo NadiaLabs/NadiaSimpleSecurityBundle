@@ -1,3 +1,5 @@
+# This is the default route name for edit target entity's roles
+# You can use your own route config with "routes" configuration
 _nadia_simple_security_edit_roles:
     path: /nadia/simple-security/edit-user-roles/{firewallName}
     controller: Nadia\Bundle\NadiaSimpleSecurityBundle\Controller\EditRolesController:edit
