@@ -28,6 +28,7 @@ class ConfigurationTest extends TestCase
         $expectConfig = [
             'super_admin_roles' => [],
             'role_managements' => [],
+            'routes' => [],
         ];
 
         $this->assertEquals($expectConfig, $config);
@@ -38,6 +39,7 @@ class ConfigurationTest extends TestCase
         $expectConfig = [
             'super_admin_roles' => [],
             'role_managements' => require __DIR__ . '/../Fixtures/config/test-role-managements.php',
+            'routes' => [],
         ];
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(), [$expectConfig]);
@@ -53,6 +55,29 @@ class ConfigurationTest extends TestCase
                 'ROLE_VIP_SUPER_ADMIN',
             ],
             'role_managements' => [],
+            'routes' => [],
+        ];
+        $processor = new Processor();
+        $config = $processor->processConfiguration(new Configuration(), [$expectConfig]);
+
+        $this->assertEquals($expectConfig, $config);
+    }
+
+    public function testRoutes()
+    {
+        $expectConfig = [
+            'super_admin_roles' => [],
+            'role_managements' => [],
+            'routes' => [
+                [
+                    'target_class_name' => 'Foo\\Bar\\TestClass',
+                    'route_name' => 'foo-bar-test',
+                ],
+                [
+                    'target_class_name' => 'Foo\\Bar\\TestClass2',
+                    'route_name' => 'foo-bar-test2',
+                ]
+            ],
         ];
         $processor = new Processor();
         $config = $processor->processConfiguration(new Configuration(), [$expectConfig]);
@@ -71,6 +96,7 @@ class ConfigurationTest extends TestCase
                 'role_class' => 'Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\InvalidRole',
                 'role_groups' => []
             ],
+            'routes' => [],
         ];
         $processor = new Processor();
         $processor->processConfiguration(new Configuration(), [$config]);

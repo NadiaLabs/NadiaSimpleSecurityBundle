@@ -11,6 +11,7 @@
         <xsd:sequence>
             <xsd:element name="super_admin_role" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
             <xsd:element name="role_management" type="role_management" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="route" type="route" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
 
@@ -34,5 +35,10 @@
     <xsd:complexType name="role">
         <xsd:attribute name="title" type="xsd:string" />
         <xsd:attribute name="role" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="route">
+        <xsd:attribute name="target_class_name" type="xsd:string" />
+        <xsd:attribute name="route_name" type="xsd:string" />
     </xsd:complexType>
 </xsd:schema>
