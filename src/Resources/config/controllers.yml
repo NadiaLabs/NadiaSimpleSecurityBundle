@@ -1,7 +1,7 @@
 parameters:
 
 services:
-    Nadia\Bundle\NadiaSimpleSecurityBundle\Controller\EditUserRolesController:
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Controller\EditRolesController:
         arguments:
             - '@twig'
             - '@form.factory'
