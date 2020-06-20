@@ -91,8 +91,6 @@ class EditRolesController
      *         - 1234 (for an id column)
      *         - ['foo' => 1234, 'bar' => 2234]
      *
-     * TODO: need a twig function: nadia_simple_security_edit_roles_url($firewallName, $entityObject, $pk)
-     *
      * @param Request $request
      * @param string  $firewallName
      *

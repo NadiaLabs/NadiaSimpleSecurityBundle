@@ -4,3 +4,9 @@ services:
     Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider:
         arguments:
             - ~
+
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Twig\Extension\RoutingExtension:
+        arguments:
+            - '@router'
+        tags:
+            - { name: twig.extension }
