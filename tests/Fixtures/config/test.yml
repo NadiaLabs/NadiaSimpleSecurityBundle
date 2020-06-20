@@ -35,3 +35,10 @@ nadia_simple_security:
                         - { role: ROLE_TEST_1_4, title: 'Role title #1-4' }
                         - { role: ROLE_TEST_1_5, title: 'Role title #1-5' }
                         - { role: ROLE_TEST_1_6, title: 'Role title #1-6' }
+    routes:
+        -   target_class_name: Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User1
+            route_name: user1
+        -   target_class_name: Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User2
+            route_name: user2
+        -   target_class_name: Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User3
+            route_name: user3

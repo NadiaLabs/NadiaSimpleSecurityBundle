@@ -11,7 +11,9 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Twig\Extension;
 
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User1;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Routing\Generator\StubUrlGenerator;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Twig\Extension\RoutingExtension;
 use PHPUnit\Framework\TestCase;
 use Twig\Environment;
@@ -50,7 +52,10 @@ class RoutingExtensionTest extends TestCase
     private function getTwig($expectedUrl)
     {
         $twig = new Environment(new ArrayLoader());
-        $twig->addExtension(new RoutingExtension(new StubUrlGenerator($expectedUrl)));
+        $stubUrlGenerator = new StubUrlGenerator([EditRolesUrlGenerator::DEFAULT_ROUTE_NAME => $expectedUrl]);
+        $urlGenerator = new EditRolesUrlGenerator($stubUrlGenerator);
+
+        $twig->addExtension(new RoutingExtension($urlGenerator));
 
         return $twig;
     }

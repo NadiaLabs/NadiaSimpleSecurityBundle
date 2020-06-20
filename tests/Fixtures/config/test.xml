@@ -41,5 +41,8 @@
                 <sec:role role="ROLE_TEST_1_6" title="Role title #1-6" />
             </sec:role_group>
         </sec:role_management>
+        <sec:route target_class_name="Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User1" route_name="user1" />
+        <sec:route target_class_name="Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User2" route_name="user2" />
+        <sec:route target_class_name="Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\RoleEditable\User3" route_name="user3" />
     </sec:config>
 </container>

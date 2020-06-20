@@ -14,6 +14,7 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\NadiaSimpleSecurityExtension;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\TestUserProvider;
 use PHPUnit\Framework\TestCase;
@@ -70,6 +71,22 @@ abstract class NadiaSimpleSecurityExtensionTest extends TestCase
         $this->assertInstanceOf(
             RoleManagementConfig::class,
             $container->get('test.service_provider.role_management_config')->get('test')
+        );
+    }
+
+    public function testEditRolesUrlGenerator()
+    {
+        $container = $this->createContainerByConfigFile('test');
+        $def = $container->getDefinition(EditRolesUrlGenerator::class);
+        $originalRouteMap = require __DIR__ . '/../Fixtures/config/test-routes.php';
+
+        $this->assertEquals(
+            array_column($originalRouteMap, 'target_class_name'),
+            array_keys($def->getArgument(1))
+        );
+        $this->assertEquals(
+            array_column($originalRouteMap, 'route_name'),
+            array_values($def->getArgument(1))
         );
     }
 

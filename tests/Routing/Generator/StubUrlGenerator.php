@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Twig\Extension;
+namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Routing\Generator;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
@@ -19,11 +19,19 @@ use Symfony\Component\Routing\RequestContext;
  */
 class StubUrlGenerator implements UrlGeneratorInterface
 {
-    private $expectedUrl;
+    /**
+     * @var array
+     */
+    private $expectedUrls;
 
-    public function __construct($expectedUrl)
+    /**
+     * StubUrlGenerator constructor.
+     *
+     * @param array $expectedUrls A array with "route name" as key and "URL" as value
+     */
+    public function __construct(array $expectedUrls)
     {
-        $this->expectedUrl = $expectedUrl;
+        $this->expectedUrls = $expectedUrls;
     }
 
     public function setContext(RequestContext $context)
@@ -38,6 +46,6 @@ class StubUrlGenerator implements UrlGeneratorInterface
 
     public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
-        return $this->expectedUrl;
+        return $this->expectedUrls[$name];
     }
 }
