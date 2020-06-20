@@ -179,6 +179,7 @@ class EditRolesController
         $formView = $form->createView();
         $viewData = [
             'target' => $target,
+            'targetClassName' => get_class($target),
             'roleGroups' => $roleGroups,
             'form' => $formView,
             'groupedRoleForms' => $this->createGroupedRoleForms($formView, $roleGroups),
