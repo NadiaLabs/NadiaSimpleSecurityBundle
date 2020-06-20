@@ -12,7 +12,7 @@
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Twig\Extension;
 
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\RoleEditableInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -22,16 +22,16 @@ use Twig\TwigFunction;
 class RoutingExtension extends AbstractExtension
 {
     /**
-     * @var UrlGeneratorInterface
+     * @var EditRolesUrlGenerator
      */
     protected $urlGenerator;
 
     /**
-     * AssetExtension constructor.
+     * RoutingExtension constructor.
      *
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param EditRolesUrlGenerator $urlGenerator
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(EditRolesUrlGenerator $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
     }
@@ -47,7 +47,7 @@ class RoutingExtension extends AbstractExtension
     }
 
     /**
-     * Render javascript with PHP data
+     * Generate URL for editing target entity's roles
      *
      * @param string                $firewallName
      * @param RoleEditableInterface $entity       An entity instance that implements RoleEditableInterface
@@ -57,12 +57,6 @@ class RoutingExtension extends AbstractExtension
      */
     public function generateEditRolesUrl($firewallName, RoleEditableInterface $entity, $pk)
     {
-        $parameters = [
-            'firewallName' => $firewallName,
-            'class' => get_class($entity),
-            'pk' => $pk,
-        ];
-
-        return $this->urlGenerator->generate('_nadia_simple_security_edit_roles', $parameters);
+        return $this->urlGenerator->generate($firewallName, $entity, $pk);
     }
 }

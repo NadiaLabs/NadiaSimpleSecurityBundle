@@ -14,6 +14,7 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Controller;
 use Doctrine\Persistence\ManagerRegistry;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Model\RoleEditableInterface;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -22,7 +23,6 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -49,7 +49,7 @@ class EditRolesController
     private $registry;
 
     /**
-     * @var UrlGeneratorInterface
+     * @var EditRolesUrlGenerator
      */
     private $urlGenerator;
 
@@ -64,14 +64,14 @@ class EditRolesController
      * @param Environment           $twig
      * @param FormFactoryInterface  $formFactory
      * @param ManagerRegistry       $registry
-     * @param UrlGeneratorInterface $urlGenerator
+     * @param EditRolesUrlGenerator $urlGenerator
      * @param ServiceProvider       $roleManagementConfigServiceProvider
      */
     public function __construct(
         Environment $twig,
         FormFactoryInterface $formFactory,
         ManagerRegistry $registry,
-        UrlGeneratorInterface $urlGenerator,
+        EditRolesUrlGenerator $urlGenerator,
         ServiceProvider $roleManagementConfigServiceProvider
     ) {
         $this->twig = $twig;
@@ -167,10 +167,7 @@ class EditRolesController
                 $om->persist($target);
                 $om->flush();
 
-                $redirectUrl = $this->urlGenerator->generate(
-                    '_nadia_simple_security_edit_roles',
-                    compact('firewallName', 'class', 'pk')
-                );
+                $redirectUrl = $this->urlGenerator->generate($firewallName, $target, $pk);
 
                 return new RedirectResponse($redirectUrl);
             }

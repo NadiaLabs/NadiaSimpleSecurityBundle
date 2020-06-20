@@ -5,8 +5,13 @@ services:
         arguments:
             - ~
 
-    Nadia\Bundle\NadiaSimpleSecurityBundle\Twig\Extension\RoutingExtension:
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator:
         arguments:
             - '@router'
+            - []
+
+    Nadia\Bundle\NadiaSimpleSecurityBundle\Twig\Extension\RoutingExtension:
+        arguments:
+            - '@Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator'
         tags:
             - { name: twig.extension }

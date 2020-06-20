@@ -13,6 +13,7 @@ namespace Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection;
 
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Config\RoleManagementConfig;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Container\ServiceProvider;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Routing\Generator\EditRolesUrlGenerator;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
@@ -49,6 +50,10 @@ class NadiaSimpleSecurityExtension extends Extension
 
         if (!empty($config['super_admin_roles'])) {
             $this->registerSuperAdminVoterService($container, $config['super_admin_roles']);
+        }
+
+        if (!empty($config['routes'])) {
+            $this->modifyEditRolesUrlGenerator($container, $config['routes']);
         }
     }
 
@@ -137,5 +142,21 @@ class NadiaSimpleSecurityExtension extends Extension
         $definition->addTag('security.voter', ['priority' => 250]);
 
         $container->setDefinition(SuperAdminRoleVoter::class, $definition);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $routes
+     */
+    private function modifyEditRolesUrlGenerator(ContainerBuilder $container, array $routes)
+    {
+        $routeMap = [];
+
+        foreach ($routes as $route) {
+            $routeMap[$route['target_class_name']] = $route['route_name'];
+        }
+
+        $container->getDefinition(EditRolesUrlGenerator::class)
+            ->replaceArgument(1, $routeMap);
     }
 }
