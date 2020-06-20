@@ -9,8 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter;
+namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Security\Authorization\Voter;
 
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Security\Authorization\Voter\SuperAdminRoleVoter;
+use Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\Fixtures\Doctrine\Entity\Role;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -35,34 +37,54 @@ class SuperAdminRoleVoterTest extends TestCase
         $this->assertEquals($validSuperAdminRoles, $property->getValue($voter));
     }
 
-    public function testVote()
+    /**
+     * @dataProvider voteDataProvider
+     *
+     * @param array $roles
+     * @param int $expectedResult
+     */
+    public function testVote(array $roles, $expectedResult)
     {
         $validSuperAdminRoles = ['ROLE_SUPER_ADMIN', 'ROLE_VIP_SUPER_ADMIN'];
         $voter = new SuperAdminRoleVoter($validSuperAdminRoles);
-
-        $roles = [];
         $token = new UsernamePasswordToken('username', 'password', 'test', $roles);
 
-        $this->assertEquals(VoterInterface::ACCESS_ABSTAIN, $voter->vote($token, null, []));
+        $this->assertEquals($expectedResult, $voter->vote($token, null, []));
 
-        $roles = ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN'];
-        $token = new UsernamePasswordToken('username', 'password', 'test', $roles);
+        $legacyToken = new StubLegacyToken($roles);
 
-        $this->assertEquals(VoterInterface::ACCESS_ABSTAIN, $voter->vote($token, null, []));
+        $this->assertEquals($expectedResult, $voter->vote($legacyToken, null, []));
 
-        $roles = ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'];
-        $token = new UsernamePasswordToken('username', 'password', 'test', $roles);
+        $legacyToken2 = new StubLegacyToken(array_map(function ($role) {
+            return new Role($role);
+        }, $roles));
 
-        $this->assertEquals(VoterInterface::ACCESS_GRANTED, $voter->vote($token, null, []));
+        $this->assertEquals($expectedResult, $voter->vote($legacyToken2, null, []));
+    }
 
-        $roles = ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_VIP_SUPER_ADMIN'];
-        $token = new UsernamePasswordToken('username', 'password', 'test', $roles);
-
-        $this->assertEquals(VoterInterface::ACCESS_GRANTED, $voter->vote($token, null, []));
-
-        $roles = ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_VIP_SUPER_ADMIN'];
-        $token = new UsernamePasswordToken('username', 'password', 'test', $roles);
-
-        $this->assertEquals(VoterInterface::ACCESS_GRANTED, $voter->vote($token, null, []));
+    public function voteDataProvider()
+    {
+        return [
+            [
+                [],
+                VoterInterface::ACCESS_ABSTAIN,
+            ],
+            [
+                ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN'],
+                VoterInterface::ACCESS_ABSTAIN,
+            ],
+            [
+                ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN'],
+                VoterInterface::ACCESS_GRANTED,
+            ],
+            [
+                ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_VIP_SUPER_ADMIN'],
+                VoterInterface::ACCESS_GRANTED,
+            ],
+            [
+                ['ROLE_NOT_SUPER_ADMIN', 'ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_VIP_SUPER_ADMIN'],
+                VoterInterface::ACCESS_GRANTED,
+            ],
+        ];
     }
 }
