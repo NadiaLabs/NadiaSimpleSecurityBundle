@@ -11,7 +11,7 @@
 
 namespace Nadia\Bundle\NadiaSimpleSecurityBundle\Tests\DependencyInjection\Compiler;
 
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Nadia\Bundle\NadiaSimpleSecurityBundle\DependencyInjection\Compiler\DoctrineOrmMappingPass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
